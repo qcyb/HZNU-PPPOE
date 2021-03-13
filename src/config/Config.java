@@ -103,13 +103,13 @@ public class Config implements method{
         props.setProperty("password", password);
     }
 
-    public static void main(String[] args) {
 
+    public void run(){
         /*
-        * description: 错误类型定义
-        * fileError: 文件读取过程中出错
-        * typeError: 用户名或者密码中出现非法字符
-        * */
+         * description: 错误类型定义
+         * fileError: 文件读取过程中出错
+         * typeError: 用户名或者密码中出现非法字符
+         * */
         String fileError = "NULL", typeError = "NULL";
         Config conf = new Config();
         String path = "src\\config\\config.properties";
@@ -127,12 +127,12 @@ public class Config implements method{
         configured = props.getProperty("configured");
 
         if(configured.equals("false")){
-            conf.chooseRules();
             conf.setRules();
+            conf.chooseRules();
             conf.setUserName();
         }
         conf.setPassWord();
-
+        rules = props.getProperty("rules");
         try {
             OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
             props.store(writer, "Finishing initialization.");
@@ -141,4 +141,5 @@ public class Config implements method{
             System.exit(1);
         }
     }
+
 }
