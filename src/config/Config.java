@@ -8,6 +8,7 @@ package config;
 
 import java.util.Properties;
 import java.io.*;
+import java.util.Scanner;
 
 /*
 * description: 需要实现的接口定义
@@ -15,6 +16,10 @@ import java.io.*;
 * getPassWord: 返回密码
 * */
 interface method{
+    void chooseRules();
+    void setUserName();
+    void setPassWord();
+    void setRules();
     String getName();
     String getPassWord();
     String getConfigured();
@@ -49,19 +54,54 @@ class judgeThread implements Runnable{
 public class Config implements method{
 
     /*
-     * description: 配置文件读取用户基本信息、应用基本信息
+     * description: 配置和读取用户基本信息、应用基本信息
      * load-from: setting.properties
      * */
-    private static String username;
-    private static String password;
+    private static final Scanner keyIn = new Scanner(System.in);
+    public static final Properties props = new Properties();
+    public static String username;
+    public static String password;
     private static String configured;//判断是否已初始化
+    private static int Operator;     //选择的运营商
+    private static String rules;
 
     @Override
-    public String getName() { return username + "@ctc"; }
+    public String getName() { return username + rules;}
     @Override
     public String getPassWord() { return password; }
     @Override
     public String getConfigured() { return configured; }
+    @Override
+    public void chooseRules() {
+        props.setProperty("configured", "true");
+        System.out.println("接下来是第一次运行的初始化内容");
+        System.out.println("请选择你的运营商店（输入数字即可）");
+        System.out.println("""
+                1.电信
+                2.移动
+                3.联通""");
+        Operator = keyIn.nextInt();
+        keyIn.nextLine();
+        if (Operator == 1) rules = props.getProperty("CT");
+        if (Operator == 2) rules = props.getProperty("CM");
+        if (Operator == 3) rules = props.getProperty("CU");
+    }
+
+    @Override
+    public void setRules() { props.setProperty("rules", rules); }
+
+    @Override
+    public void setUserName() {
+        System.out.println("请输入学号:");
+        username = keyIn.nextLine();
+        props.setProperty("username", username);
+    }
+    @Override
+    public void setPassWord() {
+        System.out.println("请输入密码:");
+        password = keyIn.nextLine();
+        props.setProperty("password", password);
+    }
 
     public static void main(String[] args) {
 
@@ -71,19 +111,34 @@ public class Config implements method{
         * typeError: 用户名或者密码中出现非法字符
         * */
         String fileError = "NULL", typeError = "NULL";
-
+        Config conf = new Config();
         String path = "src\\config\\config.properties";
-        Properties props = new Properties();
-
+        File file = new File(path);
         try {
             props.load(new FileInputStream(path));
         } catch (IOException e) {
             fileError = "配置文件丢失！";
+            System.out.println(fileError);
             System.exit(1);
         }
 
         username = props.getProperty("username");
         password = props.getProperty("password");
         configured = props.getProperty("configured");
+
+        if(configured.equals("false")){
+            conf.chooseRules();
+            conf.setRules();
+            conf.setUserName();
+        }
+        conf.setPassWord();
+
+        try {
+            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
+            props.store(writer, "Finishing initialization.");
+        }catch (IOException e) {
+            System.out.println(e.getMessage());
+            System.exit(1);
+        }
     }
 }
