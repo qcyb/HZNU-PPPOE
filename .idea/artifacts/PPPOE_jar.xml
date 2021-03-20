@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="PPPOE:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/PPPOE_jar</output-path>
+    <root id="archive" name="PPPOE.jar">
+      <element id="module-output" name="PPPOE" />
+    </root>
+  </artifact>
+</component>
