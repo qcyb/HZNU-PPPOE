@@ -115,6 +115,7 @@ public class Config implements method{
         String path = "src\\config\\config.properties";
         File file = new File(path);
         try {
+//            props.load(Config.class.getResourceAsStream("config.properties"));
             props.load(new FileInputStream(path));
         } catch (IOException e) {
             fileError = "配置文件丢失！";
@@ -127,8 +128,8 @@ public class Config implements method{
         configured = props.getProperty("configured");
 
         if(configured.equals("false")){
-            conf.setRules();
             conf.chooseRules();
+            conf.setRules();
             conf.setUserName();
         }
         conf.setPassWord();
