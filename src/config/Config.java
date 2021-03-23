@@ -76,10 +76,7 @@ public class Config implements method{
         props.setProperty("configured", "true");
         System.out.println("接下来是第一次运行的初始化内容");
         System.out.println("请选择你的运营商店（输入数字即可）");
-        System.out.println("""
-                1.电信
-                2.移动
-                3.联通""");
+        System.out.println("1.电信 2.移动 3.联通");
         Operator = keyIn.nextInt();
         keyIn.nextLine();
         if (Operator == 1) rules = props.getProperty("CT");
@@ -105,6 +102,10 @@ public class Config implements method{
 
 
     public void run(){
+
+        //测试Java读取文件的根目录
+        // System.out.println(System.getProperty("user.dir"));
+
         /*
          * description: 错误类型定义
          * fileError: 文件读取过程中出错
@@ -112,10 +113,9 @@ public class Config implements method{
          * */
         String fileError = "NULL", typeError = "NULL";
         Config conf = new Config();
-        String path = "src\\config\\config.properties";
+        String path = "HZNU-PPPOE\\src\\config\\config.properties";
         File file = new File(path);
         try {
-//            props.load(Config.class.getResourceAsStream("config.properties"));
             props.load(new FileInputStream(path));
         } catch (IOException e) {
             fileError = "配置文件丢失！";
