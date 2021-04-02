@@ -19,36 +19,8 @@ interface method{
     void chooseRules();
     void setUserName();
     void setPassWord();
-    void setRules();
     String getName();
     String getPassWord();
-    String getConfigured();
-}
-
-/*
-* description: 线程通讯问题
-*  */
-class judgeThread implements Runnable{
-    Thread thrd;
-    String sentence;
-    String legalChar = "0123456789@ctmu";
-
-    judgeThread(String sentence){
-        this.sentence = sentence;
-        thrd = new Thread(this, "#judgeThread");
-        thrd.start();
-    }
-
-    /*
-    * description: 判断合法性
-    * */
-    @Override
-    public void run(){
-        int i = 0;
-        for(i = 0; i < sentence.length(); i ++)
-            if (!(legalChar.contains( String.valueOf(sentence.charAt(i) )))) break;
-        if(i != sentence.length())  System.out.println("存在非法字符！");
-    }
 }
 
 public class Config implements method{
@@ -61,8 +33,6 @@ public class Config implements method{
     public static final Properties props = new Properties();
     public static String username;
     public static String password;
-    private static String configured;//判断是否已初始化
-    private static int Operator;     //选择的运营商
     private static String rules;
 
     @Override
@@ -70,22 +40,23 @@ public class Config implements method{
     @Override
     public String getPassWord() { return password; }
     @Override
-    public String getConfigured() { return configured; }
-    @Override
     public void chooseRules() {
+        //初始化程序
         props.setProperty("configured", "true");
         System.out.println("接下来是第一次运行的初始化内容");
         System.out.println("请选择你的运营商店（输入数字即可）");
         System.out.println("1.电信 2.移动 3.联通");
-        Operator = keyIn.nextInt();
+        int operator = keyIn.nextInt();
         keyIn.nextLine();
-        if (Operator == 1) rules = props.getProperty("CT");
-        if (Operator == 2) rules = props.getProperty("CM");
-        if (Operator == 3) rules = props.getProperty("CU");
+
+        //得到运行商的后缀
+        if (operator == 1) rules = props.getProperty("CT");
+        if (operator == 2) rules = props.getProperty("CM");
+        if (operator == 3) rules = props.getProperty("CU");
+
+        props.setProperty("rules", rules);
     }
 
-    @Override
-    public void setRules() { props.setProperty("rules", rules); }
 
     @Override
     public void setUserName() {
@@ -101,21 +72,14 @@ public class Config implements method{
     }
 
 
-    public void run(){
+    public void run() throws Exception{
 
-        //测试Java读取文件的根目录
-        // System.out.println(System.getProperty("user.dir"));
-
-        /*
-         * description: 错误类型定义
-         * fileError: 文件读取过程中出错
-         * typeError: 用户名或者密码中出现非法字符
-         * */
+        //创建和连接配置文件
         String fileError = "NULL";
-        //typeError = "NULL";
         Config conf = new Config();
         String path = "HZNU-PPPOE\\src\\config\\config.properties";
         File file = new File(path);
+
         try {
             props.load(new FileInputStream(path));
         } catch (IOException e) {
@@ -124,24 +88,15 @@ public class Config implements method{
             System.exit(1);
         }
 
-        username = props.getProperty("username");
-        password = props.getProperty("password");
-        configured = props.getProperty("configured");
-
-        if(configured.equals("false")){
+        if(props.getProperty("configured").equals("false")){
             conf.chooseRules();
-            conf.setRules();
             conf.setUserName();
         }
-        conf.setPassWord();
-        rules = props.getProperty("rules");
-        try {
-            OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
-            props.store(writer, "Finishing initialization.");
-        }catch (IOException e) {
-            System.out.println(e.getMessage());
-            System.exit(1);
-        }
+        conf.setPassWord(); //Set password anyway ^<>^.
+
+        //将上述读取的信息写入配置文件
+        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(file), "utf-8");
+        props.store(writer, "Finishing initialization.");
     }
 
 }

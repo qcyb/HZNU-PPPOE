@@ -3,12 +3,14 @@ import CMD.cmdExe;
 public class Dial {
     public static void main(String[] args) throws Exception{
         String userName, password, connectionName;
-        String command, retString;
+        String command, retString, configed;
         Config cof = new Config();
         cmdExe cmd = new cmdExe();
         cof.run();
+
         userName = cof.getName();
         password = cof.getPassWord();
+
         connectionName = "PPPOE";
         command = "rasdial " + connectionName + " " + userName + " " + password;
         retString = cmd.executeCommand(command);

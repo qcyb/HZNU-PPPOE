@@ -5,9 +5,11 @@ import java.io.InputStreamReader;
 
 public class cmdExe {
     public String executeCommand(String command) throws Exception{
-        System.out.println(command);
+        //执行从主函数Dial传入的cmd命令
         Process cmdP = Runtime.getRuntime().exec("cmd /c " + command);
-        System.out.println("正在尝试连接......");
+        System.out.println("......");
+
+        //将cmd的执行结果返回主函数
         StringBuilder sbCmd = new StringBuilder();
         BufferedReader br = new BufferedReader(new InputStreamReader(cmdP.getInputStream(), "GB2312"));
         String line;
