@@ -111,7 +111,8 @@ public class Config implements method{
          * fileError: 文件读取过程中出错
          * typeError: 用户名或者密码中出现非法字符
          * */
-        String fileError = "NULL", typeError = "NULL";
+        String fileError = "NULL";
+        //typeError = "NULL";
         Config conf = new Config();
         String path = "HZNU-PPPOE\\src\\config\\config.properties";
         File file = new File(path);
